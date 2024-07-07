@@ -1,4 +1,8 @@
-import { useForm, SubmitHandler } from "react-hook-form";
+import { z } from "zod";
+import toast from "react-hot-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ReferralFormSchema } from "@/schemas/referal-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 
 // icons
 import { IoDiamondSharp } from "react-icons/io5";
@@ -8,14 +12,54 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useEffect } from "react";
+
+// Zod schema for form validation
+type FormSchema = z.infer<typeof ReferralFormSchema>;
 
 const ReferrerForm = () => {
   // use react-hook-form for getting form values
-    // const { register, control } = useForm();
+  const { control, handleSubmit, formState } = useForm<FormSchema>({
+    resolver: zodResolver(ReferralFormSchema),
+    defaultValues: {
+      rname: "",
+      remail: "",
+      rphone: "",
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    },
+  });
+
+  // Form-errors from zod
+  const formError = () => {
+    // errors from form validation
+    const errors = formState.errors;
+
+    // error messages
+    const errorMessages = Object.values(errors)
+      .map((error) => error.message)
+      .filter(Boolean) as string[];
+
+    // toast notification for errors from zod
+    if (errorMessages.length > 0) {
+      errorMessages.forEach((message) => toast.error(message));
+    }
+  };
+
+  // use-effect for showing errors
+  useEffect(formError, [formState.errors]);
+
+  // submit form data
+  const onSubmit: SubmitHandler<FormSchema> = (data) => {
+    console.log(data);
+    // toast.success("Toast Workin yay!");
+  };
 
   return (
     <div className="w-full">
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="relative flex flex-col gap-4 ">
           {/* Divider - One */}
           <div className="border-dashed border border-slate-200 mt-3" />
@@ -27,13 +71,53 @@ const ReferrerForm = () => {
           <Label className="text-center"> Referral Details </Label>
           {/* Referrer Name */}
           <Label htmlFor="terms">Referral Name</Label>
-          <Input type="phone" placeholder="John Doe" />
-          {/*  */}
+          <Controller
+            name="rname"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="name"
+                placeholder="john doe"
+                className={`${
+                  formState.errors.rname ? "border border-red-400" : ""
+                }`}
+                {...field}
+              />
+            )}
+          />
+          {/* Referral Email */}
           <Label htmlFor="terms">Referral E-mail</Label>
-          <Input type="phone" placeholder="john.doe@gmail.com" />
+          <Controller
+            name="remail"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="email"
+                placeholder="john.doe@gmail.com"
+                className={`${
+                  formState.errors.remail ? "border border-red-400" : ""
+                }`}
+                {...field}
+              />
+            )}
+          />
           {/* Referral Phone Number */}
           <Label htmlFor="terms">Phone Number</Label>
-          <Input type="phone" placeholder="Phone Number...." />
+          <Controller
+            name="rphone"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="phone"
+                max={10}
+                placeholder="phone number...."
+                className={`${
+                  formState.errors.rphone ? "border border-red-400" : ""
+                }`}
+                {...field}
+              />
+            )}
+          />
 
           {/* Divider - Two */}
           <div className="border-dashed border border-slate-200 mt-3" />
@@ -43,26 +127,77 @@ const ReferrerForm = () => {
 
           {/* Form - One */}
           <Label className="text-center"> Your Details </Label>
-
           {/* Name */}
           <Label htmlFor="terms">Name</Label>
-          <Input type="name" placeholder="Sam Reznick" />
+          <Controller
+            name="name"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="name"
+                placeholder="sam reznick"
+                className={`${
+                  formState.errors.name ? "border border-red-400" : ""
+                }`}
+                {...field}
+              />
+            )}
+          />
 
           {/* Email */}
           <Label htmlFor="terms">Email</Label>
-          <Input type="email" placeholder="sam.reznick@gmail.com" />
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="email"
+                placeholder="sam.reznick@gmail.com"
+                className={`${
+                  formState.errors.email ? "border border-red-400" : ""
+                }`}
+                {...field}
+              />
+            )}
+          />
 
           {/* Phone Number */}
           <Label htmlFor="terms">Phone Number</Label>
-          <Input type="phone" placeholder="Phone Number...." />
+          <Controller
+            name="phone"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="phone"
+                placeholder="phone number...."
+                className={`${
+                  formState.errors.phone ? "border border-red-400" : ""
+                }`}
+                {...field}
+              />
+            )}
+          />
 
           {/* Tell us more about your referral */}
           <Label htmlFor="terms">Tell us about yourself!</Label>
-          <Textarea placeholder="Type your message here." />
+          <Controller
+            name="message"
+            control={control}
+            render={({ field }) => (
+              <Textarea
+                placeholder="Type your message here."
+                className={`${
+                  formState.errors.message ? "border border-red-400" : ""
+                }`}
+                {...field}
+              />
+            )}
+          />
 
           <Button
+            type="submit"
             variant={"outline"}
-            className="text-slate-100 shadow-inner shadow-slate-100 uppercase border hover:bg-slate-800 hover:text-slate-50 hover:shadow-slate-100 hover:border-slate-950 transition duration-200 ease-linear"
+            className="bg-slate-900 text-slate-100 shadow-inner shadow-slate-100 uppercase border hover:bg-slate-100 hover:text-slate-900 hover:shadow-slate-900 hover:border-slate-950 transition duration-200 ease-linear"
           >
             {" "}
             Refer{" "}
