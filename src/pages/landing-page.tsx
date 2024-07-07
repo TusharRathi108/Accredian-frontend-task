@@ -1,5 +1,4 @@
 // Components
-import { Button } from "@/components/ui/button";
 import ReferrerForm from "@/components/referrer-form";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -9,8 +8,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const LandingPage = () => {
+  // use-state to close the modal after successsfull form submission
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // function to open the modal when button is clicked
+  const handleOpenDialog = () => {
+    setIsDialogOpen(true);
+  };
+
+  // function to close the modal when submission is done
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
   return (
     <section className="flex flex-col lg:flex-row justify-center items-center gap-2 flex-grow">
       {/* Image */}
@@ -32,11 +46,12 @@ const LandingPage = () => {
           exclusive rewards. It's a win-win!
         </p>
         {/* Form Modal */}
-        <Dialog>
-          <DialogTrigger>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
             <Button
               variant={"outline"}
-              className="text-slate-200 text-2xl px-14 py-10 rounded-2xl font-playwrite-it-regular shadow-md shadow-slate-100 hover:bg-slate-100 hover:text-slate-900 hover:shadow-inner hover:shadow-slate-900 transition-all duration-500 ease-in-out"
+              className="text-slate-200 text-2xl px-14 py-10 rounded-2xl font-playwrite-it-regular shadow-inner shadow-slate-100 hover:bg-slate-100 hover:text-slate-900 hover:shadow-inner hover:shadow-slate-900 transition-all duration-500 ease-in-out"
+              onClick={handleOpenDialog}
             >
               {" "}
               Refer a Professional{" "}
@@ -52,7 +67,7 @@ const LandingPage = () => {
             </DialogHeader>
             {/* Form for the referral */}
             <ScrollArea className="max-h-[600px]">
-              <ReferrerForm />
+              <ReferrerForm onClose={handleCloseDialog} />
             </ScrollArea>
           </DialogContent>
         </Dialog>

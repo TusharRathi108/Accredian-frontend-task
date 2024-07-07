@@ -1,4 +1,6 @@
 import { z } from "zod";
+import axios from "axios";
+import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ReferralFormSchema } from "@/schemas/referal-form";
@@ -12,12 +14,16 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useEffect } from "react";
 
 // Zod schema for form validation
 type FormSchema = z.infer<typeof ReferralFormSchema>;
 
-const ReferrerForm = () => {
+// interface for close dialog
+interface ReferrerFormProps {
+  onClose: () => void;
+}
+
+const ReferrerForm = ({ onClose }: ReferrerFormProps) => {
   // use react-hook-form for getting form values
   const { control, handleSubmit, formState } = useForm<FormSchema>({
     resolver: zodResolver(ReferralFormSchema),
@@ -52,9 +58,19 @@ const ReferrerForm = () => {
   useEffect(formError, [formState.errors]);
 
   // submit form data
-  const onSubmit: SubmitHandler<FormSchema> = (data) => {
-    console.log(data);
-    // toast.success("Toast Workin yay!");
+  const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
+    try {
+      // post form data to DB
+      await axios.post("http://localhost:3000/api/refer", formData);
+
+      toast.success("Thank you for your referral!");
+      onClose();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error);
+        // toast.error(error.response?.data);
+      }
+    }
   };
 
   return (
