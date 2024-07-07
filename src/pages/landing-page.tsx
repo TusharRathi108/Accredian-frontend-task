@@ -1,4 +1,14 @@
+// Components
 import { Button } from "@/components/ui/button";
+import ReferrerForm from "@/components/referrer-form";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const LandingPage = () => {
   return (
@@ -17,13 +27,27 @@ const LandingPage = () => {
           Invite your friends and earn exclusive perks. It's simple and
           rewarding!
         </p>
-        <Button
-          variant={"outline"}
-          className="text-slate-200 text-2xl px-14 py-10 rounded-2xl font-playwrite-it-regular shadow-md shadow-slate-100 hover:bg-slate-100 hover:text-slate-900 hover:shadow-inner hover:shadow-slate-900 transition-all duration-500 ease-in-out"
-        >
-          {" "}
-          Refer a friend{" "}
-        </Button>
+        <Dialog>
+          <DialogTrigger>
+            <Button
+              variant={"outline"}
+              className="text-slate-200 text-2xl px-14 py-10 rounded-2xl font-playwrite-it-regular shadow-md shadow-slate-100 hover:bg-slate-100 hover:text-slate-900 hover:shadow-inner hover:shadow-slate-900 transition-all duration-500 ease-in-out"
+            >
+              {" "}
+              Refer a friend{" "}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="bg-slate-950/50 border-2 border-slate-400 backdrop-blur-sm h-5/6 w-2/3 flex flex-col text-white">
+            <DialogHeader>
+              <DialogTitle className="text-2xl text-center">
+                Kindly fill up the form!
+              </DialogTitle>
+            </DialogHeader>
+            <ScrollArea>
+              <ReferrerForm />
+            </ScrollArea>
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   );
