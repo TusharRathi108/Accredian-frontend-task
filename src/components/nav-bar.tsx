@@ -18,13 +18,16 @@ const NavBar = () => {
         Referral Nexus
       </div>
       <div className="flex gap-4 text-4xl text-slate-200">
-        <Link to={"/https://linkedin.com/in/tushar-rathi-2ab6b1230"}>
+        <Link
+          to={"https://linkedin.com/in/tushar-rathi-2ab6b1230"}
+          target="_blank"
+        >
           <FaLinkedin />
         </Link>
-        <Link to={"/https://github.com/TusharRathi108"}>
+        <Link to={"https://github.com/TusharRathi108"} target="_blank">
           <FaSquareGithub />
         </Link>
-        <Link to={"/https://tushar-portfolio-six.vercel.app/"}>
+        <Link to={"https://tushar-portfolio-six.vercel.app/"} target="_blank">
           <MdContactEmergency />
         </Link>
       </div>
