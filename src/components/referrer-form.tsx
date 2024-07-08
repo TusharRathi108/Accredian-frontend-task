@@ -65,7 +65,7 @@ const ReferrerForm = ({ onClose }: ReferrerFormProps) => {
   useEffect(formError, [formState.errors]);
 
   // submit form data
-  const onSubmit: SubmitHandler<FormSchema> = async (formData: any) => {
+  const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       // // set isLoading to true
       setIsLoading(true);
@@ -80,12 +80,14 @@ const ReferrerForm = ({ onClose }: ReferrerFormProps) => {
         allowOutsideClick: false,
         showConfirmButton: false,
         willOpen: () => {
+          // close dialog after submission
+          onClose();
           Swal.showLoading();
         },
       });
 
       // post form data to DB
-      const response = await axios.post(`${renderNodeUrl}/api/refer`, formData);
+      const response = await axios.post(`${renderNodeUrl}/ap/refer`, formData);
 
       // Update SweetAlert2 modal with success message
       Swal.fire({
@@ -96,10 +98,24 @@ const ReferrerForm = ({ onClose }: ReferrerFormProps) => {
         color: "white",
         showConfirmButton: true,
       });
-
-      // close dialog after submission
-      onClose();
     } catch (error) {
+      // Show loading spinner
+      Swal.fire({
+        title: "Submitting...",
+        text: "Please wait while we submit your referral!",
+        icon: "question",
+        background: "rgb(15 23 42)",
+        color: "white",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        willOpen: () => {
+          // close dialog after submission
+          onClose();
+          Swal.showLoading();
+        },
+      });
+
+      // Update SweetAlert2 modal with error message
       if (axios.isAxiosError(error)) {
         // show toast message on error
         Swal.fire({
