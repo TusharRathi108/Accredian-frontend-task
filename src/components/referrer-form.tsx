@@ -61,9 +61,12 @@ const ReferrerForm = ({ onClose }: ReferrerFormProps) => {
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       // post form data to DB
-      await axios.post("http://localhost:3000/api/refer", formData);
+      const response = await axios.post(
+        "http://localhost:3000/api/refer",
+        formData
+      );
 
-      toast.success("Thank you for your referral!");
+      toast.success(response.data.success);
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error)) {
